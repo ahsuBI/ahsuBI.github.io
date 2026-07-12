@@ -93,8 +93,8 @@
         <line x1="340" y1="396" x2="340" y2="440" stroke="#8A93A0" stroke-width="1" marker-end="url(#arrow)"/>
 
         <rect x="190" y="440" width="300" height="56" rx="8" fill="rgba(43,87,154,0.06)" stroke="#2B579A" stroke-width="0.5"/>
-        <text x="340" y="458" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#1F3D6E">Velocity valid for all 99</text>
-        <text x="340" y="476" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#5B6472">Median 52 days to next category</text>
+        <text x="340" y="458" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#1F3D6E">Velocity redefinition proposed</text>
+<text x="340" y="476" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#5B6472">Pending supervisor review</text>
       </svg>
       <ul>
         <li><strong>Cross-sell velocity looked broken until I found why.</strong> The original definition measured time to a customer's second product category. But 48 of 99 customers placed multiple products in their very first order, and 46 of those crossed categories on day one — so nearly half the sample showed a velocity of zero, which isn't a real signal, it's a measurement artifact from how the metric was defined. Rather than drop half the sample or leave the artifact in, I redefined the first-day multi-product order as a single "entry basket." Under that definition, all 99 customers have a valid, non-zero velocity to their next category (median 52 days), which makes the metric usable instead of a binary with almost no variance.</li>
