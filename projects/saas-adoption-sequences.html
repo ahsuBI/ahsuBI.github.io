@@ -60,6 +60,42 @@
     </section>
     <section class="case-section">
       <h2>Judgment calls</h2>
+      <svg viewBox="0 0 680 536" style="width:100%; height:auto; margin-bottom: 24px;">
+        <defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+
+        <rect x="190" y="40" width="300" height="56" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+        <text x="340" y="58" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#2C2C2A">Starting point</text>
+        <text x="340" y="76" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#5F5E5A">Time to 2nd category</text>
+
+        <line x1="340" y1="96" x2="340" y2="140" stroke="#8A93A0" stroke-width="1" marker-end="url(#arrow)"/>
+
+        <rect x="190" y="140" width="300" height="56" rx="8" fill="#FAECE7" stroke="#D85A30" stroke-width="0.5"/>
+        <text x="340" y="158" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#4A1B0C">Problem found</text>
+        <text x="340" y="176" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#993C1D">48/99 orders share day 1</text>
+
+        <line x1="340" y1="196" x2="200" y2="240" stroke="#8A93A0" stroke-width="1" marker-end="url(#arrow)"/>
+        <line x1="340" y1="196" x2="460" y2="240" stroke="#8A93A0" stroke-width="1" marker-end="url(#arrow)"/>
+
+        <rect x="90" y="240" width="220" height="56" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="0.5" opacity="0.55"/>
+        <text x="200" y="258" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#5F5E5A">Drop those customers</text>
+        <text x="200" y="276" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#888780">Loses half the sample</text>
+
+        <rect x="330" y="240" width="260" height="56" rx="8" fill="rgba(43,87,154,0.13)" stroke="#2B579A" stroke-width="0.5"/>
+        <text x="460" y="258" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#1F3D6E">Redefine as entry basket</text>
+        <text x="460" y="276" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#5B6472">Keeps the full sample</text>
+
+        <path d="M460 296 L460 318 L340 318 L340 340" fill="none" stroke="#8A93A0" stroke-width="1" marker-end="url(#arrow)"/>
+
+        <rect x="180" y="340" width="320" height="56" rx="8" fill="rgba(43,87,154,0.09)" stroke="#2B579A" stroke-width="0.5"/>
+        <text x="340" y="358" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#1F3D6E">Avoid duplicate counting</text>
+        <text x="340" y="376" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#5B6472">Sort by order date, then row ID</text>
+
+        <line x1="340" y1="396" x2="340" y2="440" stroke="#8A93A0" stroke-width="1" marker-end="url(#arrow)"/>
+
+        <rect x="190" y="440" width="300" height="56" rx="8" fill="rgba(43,87,154,0.06)" stroke="#2B579A" stroke-width="0.5"/>
+        <text x="340" y="458" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#1F3D6E">Velocity valid for all 99</text>
+        <text x="340" y="476" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#5B6472">Median 52 days to next category</text>
+      </svg>
       <ul>
         <li><strong>Cross-sell velocity looked broken until I found why.</strong> The original definition measured time to a customer's second product category. But 48 of 99 customers placed multiple products in their very first order, and 46 of those crossed categories on day one — so nearly half the sample showed a velocity of zero, which isn't a real signal, it's a measurement artifact from how the metric was defined. Rather than drop half the sample or leave the artifact in, I redefined the first-day multi-product order as a single "entry basket." Under that definition, all 99 customers have a valid, non-zero velocity to their next category (median 52 days), which makes the metric usable instead of a binary with almost no variance.</li>
         <li><strong>Thin category groups needed merging, but not silently.</strong> A few entry categories had as few as 2–6 customers, too small to support a standalone comparison. Rather than quietly dropping or merging them, I flagged the issue and the proposed groupings to my supervisor before finalizing, since the merge decision changes what the category-level comparison actually represents.</li>
