@@ -10,7 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
   <style>
-    /* case-study page extras (kept local so style.css stays untouched) */
     .case-hero { padding: 64px 0 8px; }
     .case-hero h1 {
       font-family: var(--display); font-weight: 600;
@@ -31,75 +30,56 @@
   </style>
 </head>
 <body>
-
 <div class="wrap">
-
   <header class="site">
     <a class="name" href="../index.html">Aryna Hsu</a>
     <nav aria-label="Site">
       <a class="back" href="../index.html#projects">&larr; All projects</a>
     </nav>
   </header>
-
   <main>
-
     <section class="case-hero">
       <p class="kicker">MSc thesis · Product analytics</p>
-      <!-- 頁面大標：一句話講這個 project 在解什麼問題（可以跟主頁卡片標題不同，這裡可以更完整） -->
-      <h1>XXX</h1>
-      <!-- 一行 meta：工具 · 時間範圍 · 狀態，例如 Python · pandas · 2025-2026 · In progress -->
-      <p class="case-meta">XXX</p>
+      <h1>Which entry product predicts long-term customer value?</h1>
+      <p class="case-meta">Python · Pandas · 2026 · In progress</p>
     </section>
-
     <section class="case-section">
       <h2>The problem</h2>
-      <!-- 一段話：商業問題本身 + 誰會問這個問題（把 stakeholder 自然寫進來，例如 "a question any sales lead would ask"） -->
-      <p>XXX</p>
+      <p>Which product a B2B SaaS customer buys first is often treated as a signal for how much they'll eventually spend, but it can cut the other way too: an entry point that looks profitable at first can turn into a drag on long-term value. 
+        This project tests that link directly using CRM transaction data, the kind most companies already have.</p>
     </section>
-
     <section class="case-section">
       <h2>Context &amp; constraints</h2>
-      <!-- 資料長什麼樣（幾筆、幾個欄位、時間跨度）、有什麼限制、範圍在哪 -->
-      <p>XXX</p>
+      <p>The dataset covers 9,994 transactions from 99 unique B2B customer accounts across 14 products, spanning 2020–2023. It's standard CRM transaction data rather than the behavioral telemetry most adoption research relies on, which shapes what can be measured: adoption sequence and spend are directly observable, but usage intent isn't. Products were grouped into strategic categories to make the analysis tractable, though some categories ended up with very few customers (as few as 2–6), which limits how confidently conclusions can be drawn for those groups specifically.</p>
     </section>
-
     <section class="case-section">
       <h2>Approach</h2>
-      <!-- 做了什麼，每一步附半句「為什麼選這個做法」。可以用 2-4 個短段落或一個 list -->
-      <p>XXX</p>
+      <p>Consolidated the raw transaction log into a single Customer Master Schema, one row per customer, with engineered variables for entry product, entry category, cumulative spend, cumulative profit, cross-sell velocity, and product breadth — done this way so every hypothesis could be tested against one consistent table instead of re-deriving variables each time.</p>
+      <p>Mapped all 14 products to strategic categories using an established SaaS product taxonomy rather than ad hoc grouping, so the categorization has a defensible basis rather than reflecting my own judgment calls.</p>
+      <p>Three hypotheses were set up to test the relationship from different angles: whether entry category predicts cumulative spend, whether it predicts how fast a customer cross-sells into a second category, and whether the initial discount rate a customer receives associates with lower long-term profitability.</p>
     </section>
-
     <section class="case-section">
       <h2>Judgment calls</h2>
-      <!-- 2-3 個妳做過的取捨。格式建議：遇到什麼問題 → 有哪些選項 → 我選了什麼、為什麼。這節是 hiring manager 最愛看的 -->
       <ul>
-        <li>XXX</li>
-        <li>XXX</li>
+        <li><strong>Cross-sell velocity looked broken until I found why.</strong> The original definition measured time to a customer's second product category. But 48 of 99 customers placed multiple products in their very first order, and 46 of those crossed categories on day one — so nearly half the sample showed a velocity of zero, which isn't a real signal, it's a measurement artifact from how the metric was defined. Rather than drop half the sample or leave the artifact in, I redefined the first-day multi-product order as a single "entry basket." Under that definition, all 99 customers have a valid, non-zero velocity to their next category (median 52 days), which makes the metric usable instead of a binary with almost no variance.</li>
+        <li><strong>Thin category groups needed merging, but not silently.</strong> A few entry categories had as few as 2–6 customers, too small to support a standalone comparison. Rather than quietly dropping or merging them, I flagged the issue and the proposed groupings to my supervisor before finalizing, since the merge decision changes what the category-level comparison actually represents.</li>
       </ul>
     </section>
-
     <section class="case-section">
       <h2>So what</h2>
-      <!-- 結論 + 「如果我是這家公司的 product lead，我會做什麼」。還沒有結果的話，寫目前的假設跟預計何時有答案 -->
-      <p>XXX</p>
+      <p>Results are still in progress — full analysis is expected by September 2026, ahead of the thesis defense in October. Once the hypotheses are tested, this section will lay out which entry categories actually associate with higher spend and faster cross-sell, and what that would mean in practice: which product a SaaS company should lead with in its sales motion, and where cross-sell timing expectations might need resetting.</p>
     </section>
-
     <section class="case-section">
       <h2>Artifacts</h2>
-      <!-- notebook、demo、repo 的連結。還沒有的先留 XXX，之後補 -->
-      <p class="links">XXX</p>
+      <p class="links">Notebook coming with final results — September 2026</p>
     </section>
-
   </main>
-
   <footer class="site case-foot">
     <div class="foot-links">
       <a href="../index.html#projects">&larr; All projects</a>
     </div>
     <p class="colophon">&copy; 2026 Aryna Hsu · Utrecht, Netherlands</p>
   </footer>
-
 </div>
-
 </body>
 </html>
