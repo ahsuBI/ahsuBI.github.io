@@ -95,7 +95,7 @@
 
     <section class="case-section">
       <h2>Context &amp; constraints</h2>
-      <p>The dataset is a simulated B2B SaaS sales record from Kaggle, covering 9,994 transactions across 99 customer accounts and 14 products from 2020 to 2023. Simulated data is cleaner than real data would be, and there is no business context to check findings against. Both limit how far the conclusions can travel.</p>
+      <p>The dataset is a simulated B2B SaaS sales record from Kaggle, covering 9,994 transactions across 99 customer accounts and 14 products from 2020 to 2023. Simulated data is cleaner than real data would be, and there is no business context to check findings against. Both limit the extent to which the findings can be generalised to other settings.</p>
       <p>The 14 products map to 11 categories, which I grouped into three functional groups for the hypothesis tests: Front-office (n=48), Cross-cutting (n=26) and Data/Analytics (n=25). The grouping is my own, based on what each product does, and the reasoning is explained under Judgment calls below. These group sizes are small enough that only medium-to-large effects would show up as significant, so a real association could exist and still go undetected.</p>
     </section>
 
@@ -110,7 +110,7 @@
         <li>Cross-sell velocity: days from the first order to the first purchase in a new category</li>
         <li>Product breadth and tenure: categories bought, and days between first and last order</li>
       </ul>
-      <p>Some of this is less obvious than it looks. Counting orders means counting unique order IDs, not rows, because one order spans several rows. Before trusting the table, I checked that customer IDs and names matched one to one and ran nine sanity checks on the engineered variables.</p>
+      <p>However, these patterns are not always straightforward to interpret. Counting orders means counting unique order IDs, not rows, because one order spans several rows. Before trusting the table, I checked that customer IDs and names matched one to one and ran nine sanity checks on the engineered variables.</p>
       <p class="tools">Python (pandas) for the pipeline and data validation, SPSS for hypothesis tests and charts, Excel for quick checks.</p>
     </section>
 
@@ -169,7 +169,7 @@
     <section class="case-section">
       <h2>What I found</h2>
       <p>None of the three relationships showed up. Entry group was not associated with cumulative spend or with how quickly customers expanded, and entry discount was not associated with cumulative profit.</p>
-      <p>The customer table explains why. When nearly every customer ends up buying nearly everything, where they start has little chance to matter. The discount result has a similar explanation: the entry basket accounted for a median of just 0.3% of a customer's cumulative profit, so even a deep discount on that first purchase barely touches lifetime profit.</p>
+      <p>This pattern is also reflected in the customer-level data. When nearly every customer ends up buying nearly everything, where they start has little chance to matter. The discount result has a similar explanation: the entry basket accounted for a median of just 0.3% of a customer's cumulative profit, so even a deep discount on that first purchase barely touches lifetime profit.</p>
       <p>A null result here is not proof of no effect. With 99 customers, the tests could only detect fairly large differences between groups, so smaller effects may still exist.</p>
       <h3>Product level</h3>
       <p>I sorted the 14 products by how often they start a customer relationship and how quickly those customers go on to expand. Three products, ContactMatcher, SaaS Connector Pack and ChatBot Plugin, were frequent entry points whose customers expanded fastest. Four others, including Support and FinanceHub, were just as common as entry points but saw slightly slower expansion. The remaining seven rarely started a relationship. None of the Data/Analytics products were among the fastest-expanding entry points, and four of the seven rare entry points came from that group.</p>
