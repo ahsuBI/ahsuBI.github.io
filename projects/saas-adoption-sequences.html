@@ -59,6 +59,18 @@
     }
      strong { font-weight: 600; }
     .case-section h3 { font-size: 1.125rem; color: var(--accent-dk); margin: 32px 0 8px; }
+
+第一行讓粗體改用真的 600，不再描粗。第二行把小標題稍微放大、換成深藍色、上面多留一點空間，這樣一眼就看得出它是標題。
+
+如果改完還是覺得哪裡怪，截圖給我，圈一下是哪個標題。
+
+@media (max-width: 640px) {
+      .flow { flex-direction: column; }
+      .flow .arrow { flex-basis: 24px; }
+      .flow .arrow::before { content: "\2193"; }
+    }
+      strong { font-weight: 600; }
+    .case-section h3 { font-size: 1.125rem; color: var(--accent-dk); margin: 32px 0 8px; }
   </style>
 </head>
 <body>
@@ -97,7 +109,7 @@
 
     <section class="case-section">
       <h2>Context &amp; constraints</h2>
-      <p>The dataset is a simulated B2B SaaS sales record from Kaggle, covering 9,994 transactions across 99 customer accounts and 14 products from 2020 to 2023. Simulated data is cleaner than real data would be, and there is no business context to check findings against. Both limit the extent to which the findings can be generalised to other settings.</p>
+      <p>The dataset is a simulated B2B SaaS sales record from Kaggle, covering 9,994 transactions across 99 customer accounts and 14 products from 2020 to 2023. Simulated data is cleaner than real data would be, and there is no business context to check findings against. Both limit how far the conclusions can travel.</p>
       <p>The 14 products map to 11 categories, which I grouped into three functional groups for the hypothesis tests: Front-office (n=48), Cross-cutting (n=26) and Data/Analytics (n=25). The grouping is my own, based on what each product does, and the reasoning is explained under Judgment calls below. These group sizes are small enough that only medium-to-large effects would show up as significant, so a real association could exist and still go undetected.</p>
     </section>
 
@@ -112,7 +124,7 @@
         <li>Cross-sell velocity: days from the first order to the first purchase in a new category</li>
         <li>Product breadth and tenure: categories bought, and days between first and last order</li>
       </ul>
-      <p>However, these patterns are not always straightforward to interpret. Counting orders means counting unique order IDs, not rows, because one order spans several rows. Before trusting the table, I checked that customer IDs and names matched one to one and ran nine sanity checks on the engineered variables.</p>
+      <p>Some of this is less obvious than it looks. Counting orders means counting unique order IDs, not rows, because one order spans several rows. Before trusting the table, I checked that customer IDs and names matched one to one and ran nine sanity checks on the engineered variables.</p>
       <p class="tools">Python (pandas) for the pipeline and data validation, SPSS for hypothesis tests and charts, Excel for quick checks.</p>
     </section>
 
@@ -171,7 +183,7 @@
     <section class="case-section">
       <h2>What I found</h2>
       <p>None of the three relationships showed up. Entry group was not associated with cumulative spend or with how quickly customers expanded, and entry discount was not associated with cumulative profit.</p>
-      <p>This pattern is also reflected in the customer-level data. When nearly every customer ends up buying nearly everything, where they start has little chance to matter. The discount result has a similar explanation: the entry basket accounted for a median of just 0.3% of a customer's cumulative profit, so even a deep discount on that first purchase barely touches lifetime profit.</p>
+      <p>The customer table explains why. When nearly every customer ends up buying nearly everything, where they start has little chance to matter. The discount result has a similar explanation: the entry basket accounted for a median of just 0.3% of a customer's cumulative profit, so even a deep discount on that first purchase barely touches lifetime profit.</p>
       <p>A null result here is not proof of no effect. With 99 customers, the tests could only detect fairly large differences between groups, so smaller effects may still exist.</p>
       <h3>Product level</h3>
       <p>I sorted the 14 products by how often they start a customer relationship and how quickly those customers go on to expand. Three products, ContactMatcher, SaaS Connector Pack and ChatBot Plugin, were frequent entry points whose customers expanded fastest. Four others, including Support and FinanceHub, were just as common as entry points but saw slightly slower expansion. The remaining seven rarely started a relationship. None of the Data/Analytics products were among the fastest-expanding entry points, and four of the seven rare entry points came from that group.</p>
@@ -204,4 +216,39 @@
 <circle cx="325.9" cy="182.9" r="5.5" fill="#7FA0CF"/><text x="317.9" y="194.9" text-anchor="end" font-size="11.5" fill="#161F2C">Site Analytics</text>
 <circle cx="291.8" cy="83.0" r="5.5" fill="#A3ACB8"/><text x="299.8" y="87.0" text-anchor="start" font-size="11.5" fill="#161F2C">Data Smasher</text>
 <circle cx="189.4" cy="70.5" r="5.5" fill="#A3ACB8"/><text x="197.4" y="64.5" text-anchor="start" font-size="11.5" fill="#161F2C">Storage</text>
-<circle cx="172.4" cy="303.5" r="5.5"
+<circle cx="172.4" cy="303.5" r="5.5" fill="#A3ACB8"/><text x="180.4" y="307.5" text-anchor="start" font-size="11.5" fill="#161F2C">OneView</text>
+<circle cx="172.4" cy="135.1" r="5.5" fill="#A3ACB8"/><text x="180.4" y="139.1" text-anchor="start" font-size="11.5" fill="#161F2C">SaaS Connector Pack - Gold</text>
+<circle cx="155.3" cy="77.0" r="5.5" fill="#A3ACB8"/><text x="163.3" y="95.0" text-anchor="start" font-size="11.5" fill="#161F2C">Marketing Suite</text>
+<circle cx="104.1" cy="254.5" r="5.5" fill="#A3ACB8"/><text x="112.1" y="258.5" text-anchor="start" font-size="11.5" fill="#161F2C">Big Ol Database</text>
+<text x="360.0" y="388" text-anchor="middle" font-size="12" fill="#5B6675">Customers who entered through this product</text>
+<text transform="translate(16 185.0) rotate(-90)" text-anchor="middle" font-size="12" fill="#5B6675">Avg. days until entrants expand (faster at top)</text>
+</svg>
+        <figcaption>13 products by number of entry customers and average days until those customers expanded. Alchemy is not shown because no customer entered through it. Dashed lines mark the medians used to sort products.</figcaption>
+      </figure>
+      <p>The split between the first two groups rests on differences of only a few days in expansion speed, so it is better read as a ranking than as distinct types. This part of the analysis is descriptive, not a statistical test.</p>
+      <h3>For a product team</h3>
+      <p>Two things stand out. First, choosing the perfect lead product matters less than it seems: in this data, what happens after entry carries more weight than where customers start. Second, being a good entry point and being a profitable product are different jobs. Alchemy never started a single customer relationship and was bought by only 49 customers, yet it generated the highest total profit of any product. A product that rarely brings customers in can still be one of the most valuable in the portfolio.</p>
+    </section>
+
+    <section class="case-section">
+      <h2>Looking back</h2>
+      <p><strong>Entry is the first purchase I could see, not necessarily the first purchase.</strong> 71 of 99 customers entered in the first quarter of 2020, which is the first quarter the data covers. Many of these accounts were probably customers before then, so "entry product" really means the first product observed in the window.</p>
+      <p><strong>No one left.</strong> 96 of 99 customers placed their last order in the final quarter of 2023. Without churn, retention can't be an outcome, and tenure mostly reflects when a customer first appeared in the data.</p>
+      <p><strong>Entry discount behaves more like a category than a number.</strong> 40 customers had no discount and 29 had exactly 20%, with the rest scattered. A simple discounted-versus-not comparison might have been clearer than treating it as continuous.</p>
+      <p><strong>Some fields aren't stable per customer.</strong> Segment and region change across a single customer's orders, so they can't describe the customer. With real CRM data, I'd check this before anything else.</p>
+    </section>
+
+    <section class="case-section">
+      <h2>Artifacts</h2>
+      <p class="links">Full thesis available on request.</p>
+    </section>
+  </main>
+  <footer class="site case-foot">
+    <div class="foot-links">
+      <a href="../index.html#projects">&larr; All projects</a>
+    </div>
+    <p class="colophon">&copy; 2026 Aryna Hsu · Utrecht, Netherlands</p>
+  </footer>
+</div>
+</body>
+</html>
