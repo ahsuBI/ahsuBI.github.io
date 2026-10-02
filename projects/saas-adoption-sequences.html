@@ -1,9 +1,12 @@
+好，這是含摘要區塊的完整版，整頁全部刪掉後貼上就好：
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SaaS adoption sequences · Aryna Hsu</title>
+  <title>Entry products and customer value · Aryna Hsu</title>
   <meta name="description" content="Case study by Aryna Hsu.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,6 +30,18 @@
     .case-section p, .case-section ul { max-width: 44em; }
     .back { font-size: 0.9375rem; font-weight: 500; }
     .case-foot { margin-top: 64px; }
+    .case-section h3 { font-family: var(--display); font-weight: 600; font-size: 1.0625rem; margin: 24px 0 8px; }
+    figure { margin: 24px 0 8px; max-width: 44em; }
+    figcaption { font-size: 0.875rem; color: var(--muted); margin-top: 8px; }
+    .tools { font-family: var(--mono); font-size: 0.8125rem; color: var(--muted); }
+    .tldr { margin: 28px 0 0; padding: 20px 24px; background: var(--tint); border-left: 3px solid var(--accent); border-radius: 4px; max-width: 44em; }
+    .tldr dl { margin: 0; display: grid; grid-template-columns: 7.5em 1fr; gap: 12px 16px; }
+    .tldr dt { font-family: var(--mono); font-size: 0.8125rem; color: var(--muted); padding-top: 3px; }
+    .tldr dd { margin: 0; }
+    @media (max-width: 560px) {
+      .tldr dl { grid-template-columns: 1fr; gap: 2px; }
+      .tldr dd { margin-bottom: 12px; }
+    }
   </style>
 </head>
 <body>
@@ -40,24 +55,50 @@
   <main>
     <section class="case-hero">
       <p class="kicker">MSc thesis · Product analytics</p>
-      <h1>Which entry product predicts long-term customer value?</h1>
-      <p class="case-meta">Python · Pandas · 2026 · In progress</p>
+      <h1>Does the first product a B2B SaaS customer buys shape what they're worth later?</h1>
+      <p class="case-meta">Python · Pandas · SPSS · 2026 · Completed</p>
     </section>
+
+    <section class="tldr" aria-label="Summary">
+      <dl>
+        <dt>Question</dt>
+        <dd>Are a B2B SaaS customer's entry product and entry discount associated with how much they later spend, how fast they expand and how profitable they become?</dd>
+        <dt>What I did</dt>
+        <dd>Turned 9,994 transactions into a one-row-per-customer table in Python, then tested three hypotheses across 99 customers.</dd>
+        <dt>What I found</dt>
+        <dd>No association. 91 of 99 customers ended up buying from at least 10 of the 11 categories, so where they started had little room to matter.</dd>
+        <dt>So what</dt>
+        <dd>Bringing customers in and making money are different jobs. The most profitable product never started a single customer relationship.</dd>
+      </dl>
+    </section>
+
     <section class="case-section">
       <h2>The problem</h2>
-      <p>Which product a B2B SaaS customer buys first is often treated as a signal for how much they'll eventually spend, but it can cut the other way too: an entry point that looks profitable at first can turn into a drag on long-term value. 
-        This project tests that link directly using CRM transaction data, the kind most companies already have.</p>
+      <p>I started by asking which products in a multi-product B2B SaaS portfolio were worth investing in further. But the data I had was a transaction log: it records what customers bought and when, not how they used it or where they dropped off. Usage and feature adoption aren't in there.</p>
+      <p>What transaction data can show is the downstream effect of early purchase decisions. That narrowed the question to something the data could actually answer: are a customer's entry product and entry discount associated with how much they spend, how quickly they expand into other product categories, and how profitable they become?</p>
     </section>
+
     <section class="case-section">
       <h2>Context &amp; constraints</h2>
-      <p>The dataset covers 9,994 transactions from 99 unique B2B customer accounts across 14 products, spanning 2020–2023. It's standard CRM transaction data rather than the behavioral telemetry most adoption research relies on, which shapes what can be measured: adoption sequence and spend are directly observable, but usage intent isn't. Products were grouped into strategic categories to make the analysis tractable, though some categories ended up with very few customers (as few as 2–6), which limits how confidently conclusions can be drawn for those groups specifically.</p>
+      <p>The dataset is a simulated B2B SaaS sales record from Kaggle, covering 9,994 transactions across 99 customer accounts and 14 products from 2020 to 2023. Simulated data is cleaner than real data would be, and there is no business context to check findings against. Both limit how far the conclusions can travel.</p>
+      <p>The 14 products map to 11 categories, which I grouped into three functional groups for the hypothesis tests: Front-office (n=48), Cross-cutting (n=26) and Data/Analytics (n=25). The grouping is my own, based on what each product does, and the reasoning is explained under Judgment calls below. These group sizes are small enough that only medium-to-large effects would show up as significant, so a real association could exist and still go undetected.</p>
     </section>
+
     <section class="case-section">
       <h2>Approach</h2>
-      <p>Consolidated the raw transaction log into a single Customer Master Schema, one row per customer, with engineered variables for entry product, entry category, cumulative spend, cumulative profit, cross-sell velocity, and product breadth — done this way so every hypothesis could be tested against one consistent table instead of re-deriving variables each time.</p>
-      <p>Mapped all 14 products to strategic categories using an established SaaS product taxonomy rather than ad hoc grouping, so the categorization has a defensible basis rather than reflecting my own judgment calls.</p>
-      <p>Three hypotheses were set up to test the relationship from different angles: whether entry category predicts cumulative spend, whether it predicts how fast a customer cross-sells into a second category, and whether the initial discount rate a customer receives associates with lower long-term profitability.</p>
+      <p>The raw file has one row per line item: 9,994 rows, but only 5,009 orders and 99 customers. My questions were about customers, so the first step was to collapse everything into one row per customer.</p>
+      <p>I worked backwards from the hypotheses. Each one needed a few variables, and each variable needed specific raw columns:</p>
+      <ul>
+        <li>Entry product and category: the products in a customer's first order</li>
+        <li>Entry discount: the discount on that first order, weighted by sales</li>
+        <li>Cumulative spend and profit: sales and profit summed across all orders</li>
+        <li>Cross-sell velocity: days from the first order to the first purchase in a new category</li>
+        <li>Product breadth and tenure: categories bought, and days between first and last order</li>
+      </ul>
+      <p>Some of this is less obvious than it looks. Counting orders means counting unique order IDs, not rows, because one order spans several rows. Before trusting the table, I checked that customer IDs and names matched one to one and ran nine sanity checks on the engineered variables.</p>
+      <p class="tools">Python (pandas) for the pipeline and data validation, SPSS for hypothesis tests and charts, Excel for quick checks.</p>
     </section>
+
     <section class="case-section">
       <h2>Judgment calls</h2>
       <svg viewBox="0 0 680 536" style="width:100%; height:auto; margin-bottom: 24px;">
@@ -71,7 +112,7 @@
 
         <rect x="190" y="140" width="300" height="56" rx="8" fill="#FAECE7" stroke="#D85A30" stroke-width="0.5"/>
         <text x="340" y="158" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#4A1B0C">Problem found</text>
-        <text x="340" y="176" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#993C1D">48 of 99 customers order same-day</text>
+        <text x="340" y="176" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#993C1D">48 of 99 first orders hold several products</text>
 
         <line x1="340" y1="196" x2="200" y2="240" stroke="#8A93A0" stroke-width="1" marker-end="url(#arrow)"/>
         <line x1="340" y1="196" x2="460" y2="240" stroke="#8A93A0" stroke-width="1" marker-end="url(#arrow)"/>
@@ -93,21 +134,99 @@
         <line x1="340" y1="396" x2="340" y2="440" stroke="#8A93A0" stroke-width="1" marker-end="url(#arrow)"/>
 
         <rect x="190" y="440" width="300" height="56" rx="8" fill="rgba(43,87,154,0.06)" stroke="#2B579A" stroke-width="0.5"/>
-        <text x="340" y="458" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#1F3D6E">Velocity redefinition proposed</text>
-<text x="340" y="476" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#5B6472">Pending supervisor review</text>
+        <text x="340" y="458" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#1F3D6E">Expansion measured from entry basket</text>
+        <text x="340" y="476" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#5B6472">Median 52 days, full sample kept</text>
       </svg>
       <ul>
-        <li><strong>Cross-sell velocity looked broken until I found why.</strong> The original definition measured time to a customer's second product category. But 48 of 99 customers placed multiple products in their very first order, and 46 of those crossed categories on day one — so nearly half the sample showed a velocity of zero, which isn't a real signal, it's a measurement artifact from how the metric was defined. Rather than drop half the sample or leave the artifact in, I redefined the first-day multi-product order as a single "entry basket." Under that definition, all 99 customers have a valid, non-zero velocity to their next category (median 52 days), which makes the metric usable instead of a binary with almost no variance.</li>
-        <li><strong>Thin category groups needed merging, but not silently.</strong> A few entry categories had as few as 2–6 customers, too small to support a standalone comparison. Rather than quietly dropping or merging them, I flagged the issue and the proposed groupings to my supervisor before finalizing, since the merge decision changes what the category-level comparison actually represents.</li>
+        <li><strong>What counts as the first purchase.</strong> My first definition of entry was a customer's first product. But 48 of 99 customers bought several products in their very first order, and 46 of those spanned more than one category on day one. Under the original definition, nearly half the sample would show expansion on day zero, which reflects how orders are recorded rather than how customers behave. Instead of dropping those customers, I treated the whole first order as an entry basket and measured expansion from there. When a basket spanned several categories, the entry category was the one with the highest sales. Every customer then had a valid expansion time, with a median of 52 days. I had also planned a simpler outcome, whether a customer expanded within 12 months. All 99 did, so it carried no information, and I switched to measuring the number of days instead.</li>
+        <li><strong>Grouping products by what they do, not by how they performed.</strong> Several of the 11 categories had only a handful of entry customers, too few to compare on their own. I merged them into three groups by organisational function: customer-facing tools, data and analytics tools, and tools used across functions such as integration and finance. The groups were fixed before I looked at any outcomes. Because the coding was done by one person, another analyst could reasonably draw the lines differently. When the results came back null, I kept the groups as they were rather than re-cutting them in search of a significant split.</li>
       </ul>
     </section>
+
     <section class="case-section">
-      <h2>So what</h2>
-      <p>Results are still in progress — full analysis is expected by September 2026, ahead of the thesis defense in October. Once the hypotheses are tested, this section will lay out which entry categories actually associate with higher spend and faster cross-sell, and what that would mean in practice: which product a SaaS company should lead with in its sales motion, and where cross-sell timing expectations might need resetting.</p>
+      <h2>Reading the customer table</h2>
+      <p><strong>Almost everyone ends up buying almost everything.</strong> By the end of the period, 91 of 99 customers had bought from 10 or 11 of the 11 categories. If every entry path leads to roughly the same portfolio, the entry product has very little room to make a difference. This became the central finding.</p>
+      <figure>
+        <svg viewBox="0 0 680 260" role="img" aria-label="Bar chart of product breadth: 1 customer bought from 8 categories, 7 from 9, 47 from 10 and 44 from 11" style="width:100%;height:auto;font-family:var(--body)">
+<line x1="70" x2="650" y1="210.0" y2="210.0" stroke="#E3E8EE"/><text x="62" y="214.0" text-anchor="end" font-size="11" fill="#5B6675">0</text>
+<line x1="70" x2="650" y1="172.8" y2="172.8" stroke="#E3E8EE"/><text x="62" y="176.8" text-anchor="end" font-size="11" fill="#5B6675">10</text>
+<line x1="70" x2="650" y1="135.6" y2="135.6" stroke="#E3E8EE"/><text x="62" y="139.6" text-anchor="end" font-size="11" fill="#5B6675">20</text>
+<line x1="70" x2="650" y1="98.4" y2="98.4" stroke="#E3E8EE"/><text x="62" y="102.4" text-anchor="end" font-size="11" fill="#5B6675">30</text>
+<line x1="70" x2="650" y1="61.2" y2="61.2" stroke="#E3E8EE"/><text x="62" y="65.2" text-anchor="end" font-size="11" fill="#5B6675">40</text>
+<line x1="70" x2="650" y1="24.0" y2="24.0" stroke="#E3E8EE"/><text x="62" y="28.0" text-anchor="end" font-size="11" fill="#5B6675">50</text>
+<rect x="130" y="206.3" width="90" height="3.7" fill="#A3ACB8" rx="2"/><text x="175.0" y="200.3" text-anchor="middle" font-size="12" font-weight="600" fill="#161F2C">1</text><text x="175.0" y="228" text-anchor="middle" font-size="11.5" fill="#5B6675">8 of 11</text>
+<rect x="270" y="184.0" width="90" height="26.0" fill="#A3ACB8" rx="2"/><text x="315.0" y="178.0" text-anchor="middle" font-size="12" font-weight="600" fill="#161F2C">7</text><text x="315.0" y="228" text-anchor="middle" font-size="11.5" fill="#5B6675">9 of 11</text>
+<rect x="410" y="35.2" width="90" height="174.8" fill="#2B579A" rx="2"/><text x="455.0" y="29.2" text-anchor="middle" font-size="12" font-weight="600" fill="#161F2C">47</text><text x="455.0" y="228" text-anchor="middle" font-size="11.5" fill="#5B6675">10 of 11</text>
+<rect x="550" y="46.3" width="90" height="163.7" fill="#2B579A" rx="2"/><text x="595.0" y="40.3" text-anchor="middle" font-size="12" font-weight="600" fill="#161F2C">44</text><text x="595.0" y="228" text-anchor="middle" font-size="11.5" fill="#5B6675">11 of 11</text>
+<text x="360.0" y="252" text-anchor="middle" font-size="12" fill="#5B6675">Product categories bought by the end of 2023</text>
+<text transform="translate(16 117.0) rotate(-90)" text-anchor="middle" font-size="12" fill="#5B6675">Customers</text></svg>
+        <figcaption>Product breadth per customer. 91 of 99 customers bought from at least 10 of the 11 categories.</figcaption>
+      </figure>
+      <p><strong>Expansion speed is skewed.</strong> Most customers moved into a new category within a few months (median 52 days), but a long tail waited up to 322 days. A log transform didn't fix the skew, so I compared groups with Kruskal-Wallis rather than ANOVA.</p>
+      <p><strong>Ten customers lost money overall.</strong> Ten of the 99 had negative cumulative profit across the whole period, which kept the discount question open: were deep entry discounts behind those accounts?</p>
     </section>
+
+    <section class="case-section">
+      <h2>What I found</h2>
+      <p>None of the three relationships showed up. Entry group was not associated with cumulative spend or with how quickly customers expanded, and entry discount was not associated with cumulative profit.</p>
+      <p>The customer table explains why. When nearly every customer ends up buying nearly everything, where they start has little chance to matter. The discount result has a similar explanation: the entry basket accounted for a median of just 0.3% of a customer's cumulative profit, so even a deep discount on that first purchase barely touches lifetime profit.</p>
+      <p>A null result here is not proof of no effect. With 99 customers, the tests could only detect fairly large differences between groups, so smaller effects may still exist.</p>
+      <h3>Product level</h3>
+      <p>I sorted the 14 products by how often they start a customer relationship and how quickly those customers go on to expand. Three products, ContactMatcher, SaaS Connector Pack and ChatBot Plugin, were frequent entry points whose customers expanded fastest. Four others, including Support and FinanceHub, were just as common as entry points but saw slightly slower expansion. The remaining seven rarely started a relationship. None of the Data/Analytics products were among the fastest-expanding entry points, and four of the seven rare entry points came from that group.</p>
+      <figure>
+        <svg viewBox="0 0 680 400" role="img" aria-label="Scatter plot of 13 products: number of customers who entered through each product against their average days to expand into a new category" style="width:100%;height:auto;font-family:var(--body)">
+<line x1="70" x2="650" y1="30.0" y2="30.0" stroke="#E3E8EE"/><text x="62" y="34.0" text-anchor="end" font-size="11" fill="#5B6675">50</text>
+<line x1="70" x2="650" y1="83.4" y2="83.4" stroke="#E3E8EE"/><text x="62" y="87.4" text-anchor="end" font-size="11" fill="#5B6675">60</text>
+<line x1="70" x2="650" y1="136.9" y2="136.9" stroke="#E3E8EE"/><text x="62" y="140.9" text-anchor="end" font-size="11" fill="#5B6675">70</text>
+<line x1="70" x2="650" y1="190.3" y2="190.3" stroke="#E3E8EE"/><text x="62" y="194.3" text-anchor="end" font-size="11" fill="#5B6675">80</text>
+<line x1="70" x2="650" y1="243.8" y2="243.8" stroke="#E3E8EE"/><text x="62" y="247.8" text-anchor="end" font-size="11" fill="#5B6675">90</text>
+<line x1="70" x2="650" y1="297.2" y2="297.2" stroke="#E3E8EE"/><text x="62" y="301.2" text-anchor="end" font-size="11" fill="#5B6675">100</text>
+<line x1="70" x2="650" y1="350.7" y2="350.7" stroke="#E3E8EE"/><text x="62" y="354.7" text-anchor="end" font-size="11" fill="#5B6675">110</text>
+<text x="70.0" y="358" text-anchor="middle" font-size="11" fill="#5B6675">0</text>
+<text x="155.3" y="358" text-anchor="middle" font-size="11" fill="#5B6675">5</text>
+<text x="240.6" y="358" text-anchor="middle" font-size="11" fill="#5B6675">10</text>
+<text x="325.9" y="358" text-anchor="middle" font-size="11" fill="#5B6675">15</text>
+<text x="411.2" y="358" text-anchor="middle" font-size="11" fill="#5B6675">20</text>
+<text x="496.5" y="358" text-anchor="middle" font-size="11" fill="#5B6675">25</text>
+<text x="581.8" y="358" text-anchor="middle" font-size="11" fill="#5B6675">30</text>
+<line x1="308.8" x2="308.8" y1="30" y2="340" stroke="#5B6675" stroke-dasharray="4 4"/>
+<line x1="70" x2="650" y1="181.1" y2="181.1" stroke="#5B6675" stroke-dasharray="4 4"/>
+<text x="313.8" y="40" font-size="10.5" fill="#5B6675">median 14 customers</text>
+<text x="74" y="195" text-anchor="start" font-size="10.5" fill="#5B6675">median 78 days</text>
+<circle cx="598.8" cy="168.1" r="5.5" fill="#2B579A"/><text x="590.8" y="158.1" text-anchor="end" font-size="11.5" fill="#161F2C">ContactMatcher</text>
+<circle cx="496.5" cy="184.4" r="5.5" fill="#7FA0CF"/><text x="504.5" y="188.4" text-anchor="start" font-size="11.5" fill="#161F2C">Support</text>
+<circle cx="445.3" cy="181.1" r="5.5" fill="#2B579A"/><text x="453.3" y="173.1" text-anchor="start" font-size="11.5" fill="#161F2C">SaaS Connector Pack</text>
+<circle cx="377.1" cy="185.0" r="5.5" fill="#7FA0CF"/><text x="385.1" y="199.0" text-anchor="start" font-size="11.5" fill="#161F2C">FinanceHub</text>
+<circle cx="325.9" cy="161.5" r="5.5" fill="#2B579A"/><text x="317.9" y="155.5" text-anchor="end" font-size="11.5" fill="#161F2C">ChatBot Plugin</text>
+<circle cx="325.9" cy="240.6" r="5.5" fill="#7FA0CF"/><text x="333.9" y="244.6" text-anchor="start" font-size="11.5" fill="#161F2C">Marketing Suite - Gold</text>
+<circle cx="325.9" cy="182.9" r="5.5" fill="#7FA0CF"/><text x="317.9" y="194.9" text-anchor="end" font-size="11.5" fill="#161F2C">Site Analytics</text>
+<circle cx="291.8" cy="83.0" r="5.5" fill="#A3ACB8"/><text x="299.8" y="87.0" text-anchor="start" font-size="11.5" fill="#161F2C">Data Smasher</text>
+<circle cx="189.4" cy="70.5" r="5.5" fill="#A3ACB8"/><text x="197.4" y="64.5" text-anchor="start" font-size="11.5" fill="#161F2C">Storage</text>
+<circle cx="172.4" cy="303.5" r="5.5" fill="#A3ACB8"/><text x="180.4" y="307.5" text-anchor="start" font-size="11.5" fill="#161F2C">OneView</text>
+<circle cx="172.4" cy="135.1" r="5.5" fill="#A3ACB8"/><text x="180.4" y="139.1" text-anchor="start" font-size="11.5" fill="#161F2C">SaaS Connector Pack - Gold</text>
+<circle cx="155.3" cy="77.0" r="5.5" fill="#A3ACB8"/><text x="163.3" y="95.0" text-anchor="start" font-size="11.5" fill="#161F2C">Marketing Suite</text>
+<circle cx="104.1" cy="254.5" r="5.5" fill="#A3ACB8"/><text x="112.1" y="258.5" text-anchor="start" font-size="11.5" fill="#161F2C">Big Ol Database</text>
+<text x="360.0" y="388" text-anchor="middle" font-size="12" fill="#5B6675">Customers who entered through this product</text>
+<text transform="translate(16 185.0) rotate(-90)" text-anchor="middle" font-size="12" fill="#5B6675">Avg. days until entrants expand (faster at top)</text>
+</svg>
+        <figcaption>13 products by number of entry customers and average days until those customers expanded. Alchemy is not shown because no customer entered through it. Dashed lines mark the medians used to sort products.</figcaption>
+      </figure>
+      <p>The split between the first two groups rests on differences of only a few days in expansion speed, so it is better read as a ranking than as distinct types. This part of the analysis is descriptive, not a statistical test.</p>
+      <h3>For a product team</h3>
+      <p>Two things stand out. First, choosing the perfect lead product matters less than it seems: in this data, what happens after entry carries more weight than where customers start. Second, being a good entry point and being a profitable product are different jobs. Alchemy never started a single customer relationship and was bought by only 49 customers, yet it generated the highest total profit of any product. A product that rarely brings customers in can still be one of the most valuable in the portfolio.</p>
+    </section>
+
+    <section class="case-section">
+      <h2>Looking back</h2>
+      <p><strong>Entry is the first purchase I could see, not necessarily the first purchase.</strong> 71 of 99 customers entered in the first quarter of 2020, which is the first quarter the data covers. Many of these accounts were probably customers before then, so "entry product" really means the first product observed in the window.</p>
+      <p><strong>No one left.</strong> 96 of 99 customers placed their last order in the final quarter of 2023. Without churn, retention can't be an outcome, and tenure mostly reflects when a customer first appeared in the data.</p>
+      <p><strong>Entry discount behaves more like a category than a number.</strong> 40 customers had no discount and 29 had exactly 20%, with the rest scattered. A simple discounted-versus-not comparison might have been clearer than treating it as continuous.</p>
+      <p><strong>Some fields aren't stable per customer.</strong> Segment and region change across a single customer's orders, so they can't describe the customer. With real CRM data, I'd check this before anything else.</p>
+    </section>
+
     <section class="case-section">
       <h2>Artifacts</h2>
-      <p class="links">Notebook coming with final results — September 2026</p>
+      <p class="links">Full thesis available on request.</p>
     </section>
   </main>
   <footer class="site case-foot">
@@ -119,3 +238,4 @@
 </div>
 </body>
 </html>
+```
