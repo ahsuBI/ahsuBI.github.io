@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Battery Passport compliance · Aryna Hsu</title>
+  <title>EU Battery Passport architecture · Aryna Hsu</title>
   <meta name="description" content="Case study by Aryna Hsu.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
   <style>
-    /* case-study page extras (kept local so style.css stays untouched) */
     .case-hero { padding: 64px 0 8px; }
     .case-hero h1 {
       font-family: var(--display); font-weight: 600;
@@ -26,80 +25,125 @@
       padding-bottom: 10px; border-bottom: 1px solid var(--line);
     }
     .case-section p, .case-section ul { max-width: 44em; }
+    .case-section li { margin-bottom: 10px; }
     .back { font-size: 0.9375rem; font-weight: 500; }
     .case-foot { margin-top: 64px; }
+    strong { font-weight: 600; }
+    .tldr { margin: 28px 0 0; padding: 20px 24px; background: var(--tint); border-left: 3px solid var(--accent); border-radius: 4px; max-width: 44em; }
+    .tldr dl { margin: 0; display: grid; grid-template-columns: 7.5em 1fr; gap: 12px 16px; }
+    .tldr dt { font-family: var(--mono); font-size: 0.8125rem; color: var(--muted); padding-top: 3px; }
+    .tldr dd { margin: 0; }
+    .chain { list-style: none; padding: 0; margin: 8px 0 24px; display: flex; flex-wrap: wrap; gap: 10px 0; max-width: 44em; counter-reset: step; }
+    .chain li { margin: 0; display: flex; align-items: center; font-size: 0.875rem; }
+    .chain li span { border: 1px solid var(--line); background: #fff; border-radius: 6px; padding: 8px 12px; counter-increment: step; }
+    .chain li span::before { content: counter(step); font-family: var(--mono); font-size: 0.75rem; color: var(--accent); margin-right: 8px; }
+    .chain li:not(:last-child)::after { content: "\2192"; color: var(--muted); margin: 0 8px; }
+    .chain li.turn span { border-color: #D85A30; background: #FAECE7; }
+    .table-wrap { overflow-x: auto; max-width: 44em; margin: 12px 0 20px; }
+    table.decide { border-collapse: collapse; width: 100%; font-size: 0.875rem; }
+    .decide th, .decide td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .decide th { font-family: var(--mono); font-weight: 500; font-size: 0.75rem; color: var(--muted); }
+    .decide td:last-child { font-weight: 600; }
+    .decide tr.ai td:last-child { color: var(--accent-dk); }
+    @media (max-width: 560px) {
+      .tldr dl { grid-template-columns: 1fr; gap: 2px; }
+      .tldr dd { margin-bottom: 12px; }
+    }
   </style>
 </head>
 <body>
-
 <div class="wrap">
-
   <header class="site">
     <a class="name" href="../index.html">Aryna Hsu</a>
     <nav aria-label="Site">
       <a class="back" href="../index.html#projects">&larr; All projects</a>
     </nav>
   </header>
-
   <main>
-
     <section class="case-hero">
-      <p class="kicker">Student consulting · Accenture Netherlands</p>
-      <!-- 頁面大標：一句話講這個 project 在解什麼問題（可以跟主頁卡片標題不同，這裡可以更完整） -->
-      <h1>XXX</h1>
-      <!-- 一行 meta：工具 · 時間範圍 · 狀態，例如 Python · pandas · 2025-2026 · In progress -->
-      <p class="case-meta">XXX</p>
+      <p class="kicker">Industry project with Accenture · Solution design</p>
+      <h1>Does a battery passport need AI at all?</h1>
+      <p class="case-meta">Team of eight · Feb to May 2026</p>
+    </section>
+
+    <section class="tldr" aria-label="Summary">
+      <dl>
+        <dt>Question</dt>
+        <dd>Which parts of an EU battery passport system actually need AI, and which are better left to rules?</dd>
+        <dt>What we built</dt>
+        <dd>A proposed compliance architecture for EV-industry companies, in two versions for different types of customer.</dd>
+        <dt>My part</dt>
+        <dd>The problem definition, the solution architecture and the competitive landscape. I benchmarked language models, compared the two versions, and co-built the cost comparison.</dd>
+        <dt>Key idea</dt>
+        <dd>AI only where there is no fixed right answer. Checks that have a right answer go to rules, and final submissions go to a person.</dd>
+      </dl>
     </section>
 
     <section class="case-section">
       <h2>The problem</h2>
-      <!-- 一段話：商業問題本身 + 誰會問這個問題（把 stakeholder 自然寫進來，例如 "a question any sales lead would ask"） -->
-      <p>XXX</p>
+      <p>From 18 February 2027, every EV battery and every industrial battery over 2 kWh sold in the EU needs a digital battery passport. To fill one in, a manufacturer has to collect data from dozens of suppliers, in different file formats, with different names for the same values, and often in different languages. Most of that work is still done by hand.</p>
+      <p>Our brief was to propose how AI and data management could make it manageable.</p>
     </section>
 
     <section class="case-section">
       <h2>Context &amp; constraints</h2>
-      <!-- 資料長什麼樣（幾筆、幾個欄位、時間跨度）、有什麼限制、範圍在哪 -->
-      <p>XXX</p>
+      <p>A TIAS student consultancy project with Accenture Netherlands, with eight students. I owned the problem definition, solution and competitive landscape sections, co-built the cost model with two teammates, and presented the first part of the final pitch. Other teammates covered target customers, the roadmap and the commercial model.</p>
+      <p>The full proposal is not public, so this page covers my reasoning and leaves out figures and deliverables.</p>
     </section>
 
     <section class="case-section">
-      <h2>Approach</h2>
-      <!-- 做了什麼，每一步附半句「為什麼選這個做法」。可以用 2-4 個短段落或一個 list -->
-      <p>XXX</p>
+      <h2>How the thinking moved</h2>
+      <ol class="chain" aria-label="Sequence of questions">
+        <li class="turn"><span>Is this overengineered?</span></li>
+        <li><span>Where does AI belong?</span></li>
+        <li><span>Does each part earn its place?</span></li>
+        <li><span>What's the minimum that complies?</span></li>
+        <li><span>Which version for which customer?</span></li>
+        <li><span>Does it all hold together?</span></li>
+      </ol>
+      <p>Early on, I was leaning toward a stack built on small language models and blockchain. An engineer we spoke to described most of it as "essentially just BI." That sent me back through the stack to ask, for each component, what problem it solved that something simpler couldn't.</p>
     </section>
 
     <section class="case-section">
       <h2>Judgment calls</h2>
-      <!-- 2-3 個妳做過的取捨。格式建議：遇到什麼問題 → 有哪些選項 → 我選了什麼、為什麼。這節是 hiring manager 最愛看的 -->
       <ul>
-        <li>XXX</li>
-        <li>XXX</li>
+        <li><strong>Where AI belongs.</strong> Reading supplier documents is the hard part. The same value can be "Nominal V" in one file and "Rated Voltage" in another, in English in one and Chinese in the next. No list of rules covers that, so this is where a language model earns its place. Checking whether a value meets the regulation is different: the regulation defines the answer, so SQL rules and data quality checks handle it, and errors are flagged back to the supplier automatically. A model there would only add the risk of a confident wrong answer.</li>
+      </ul>
+      <div class="table-wrap">
+        <table class="decide">
+          <thead>
+            <tr><th>Step</th><th>Fixed right answer?</th><th>Cost of an error</th><th>Handled by</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Read supplier files in different formats</td><td>No</td><td>Medium</td><td>Document parsing</td></tr>
+            <tr class="ai"><td>Match field names and translate languages</td><td>No</td><td>Medium</td><td>Language model</td></tr>
+            <tr><td>Check required fields and regulatory limits</td><td>Yes</td><td>High</td><td>Rules</td></tr>
+            <tr><td>Submit to the regulator</td><td>Yes</td><td>Very high</td><td>A person signs off</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        <li><strong>Matching models to jobs.</strong> We kept to open-weight models that could run on a company's own servers. Phi-4 handles structured extraction, Llama is the fallback for documents in other languages, and Mistral is an optional add-on for spotting anomalies. The validation layer itself has no language model in it.</li>
+        <li><strong>Segmenting by customer, not by feature.</strong> Both versions do the same things; the difference is how they're built. Large cell manufacturers, with many suppliers and messy data, get three separate layers that are easier to scale and to swap parts out of later. Tier-1 suppliers with simpler data get two, with capture and validation merged, which is quicker to deploy and has fewer parts to maintain.</li>
+        <li><strong>On-premise by default.</strong> Battery chemistry is commercially sensitive, and suppliers won't share it if it leaves their control. Everything runs on the company's own servers, and the passport shares proof that the data complies rather than the data itself.</li>
+        <li><strong>Costing the architecture, not the model.</strong> With two teammates, I compared what each version would cost to build and run over five years. We compared architectures because that's the decision a customer actually faces. Open-weight models carry no licence or per-use fees, so cost comes mostly from the hardware to run them and the people to maintain the system, and swapping one model for another barely changes it. The versions differed mainly in integration work and the size of the team each needs, which we modelled separately for Western and Eastern European salaries.</li>
+        <li><strong>Checking that it holds together.</strong> Before the final version, I went back through the proposal: whether both versions really included the same proof layer, whether cost line items added up to the totals, and whether external figures had a source. Several didn't, and were fixed.</li>
       </ul>
     </section>
 
     <section class="case-section">
-      <h2>So what</h2>
-      <!-- 結論 + 「如果我是這家公司的 product lead，我會做什麼」。還沒有結果的話，寫目前的假設跟預計何時有答案 -->
-      <p>XXX</p>
+      <h2>Looking back</h2>
+      <p><strong>Agree on what each component must justify, early.</strong> My early evaluation found blockchain was only needed to notarise compliance results. As workstreams developed in parallel, the final proposal made it a core layer. Next time I'd agree up front on what each component has to justify before it goes into the architecture, and check against that as the work comes together.</p>
+      <p><strong>Screen models on licence and language first.</strong> Llama 4's licence excludes companies based in the EU, and Chinese is not among its officially supported languages, even though most battery suppliers are in Asia. A licence and language check before comparing capabilities would have changed the shortlist.</p>
+      <p><strong>Test on real documents.</strong> We compared models on what they're designed for, not on actual supplier files. A small test set of real multilingual documents would have been the first step.</p>
     </section>
-
-    <section class="case-section">
-      <h2>Artifacts</h2>
-      <!-- notebook、demo、repo 的連結。還沒有的先留 XXX，之後補 -->
-      <p class="links">XXX</p>
-    </section>
-
   </main>
-
   <footer class="site case-foot">
     <div class="foot-links">
       <a href="../index.html#projects">&larr; All projects</a>
     </div>
     <p class="colophon">&copy; 2026 Aryna Hsu · Utrecht, Netherlands</p>
   </footer>
-
 </div>
-
 </body>
 </html>
