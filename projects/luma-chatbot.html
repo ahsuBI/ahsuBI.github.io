@@ -42,6 +42,11 @@
     .path ol { margin: 0; padding-left: 18px; }
     .path li { margin-bottom: 4px; }
     .path .end { margin: 10px 0 0; font-size: 0.875rem; color: var(--muted); }
+    .demo-alt { display: inline-block; margin: 20px 0 0 16px; font-size: 0.9375rem; }
+    .compare { width: 100%; max-width: 44em; border-collapse: collapse; margin: 16px 0; font-size: 0.9375rem; }
+    .compare th { font-family: var(--mono); font-size: 0.8125rem; font-weight: 500; color: var(--muted); text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+    .compare td { padding: 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .compare td:first-child { width: 45%; color: var(--muted); }
     @media (max-width: 560px) {
       .tldr dl { grid-template-columns: 1fr; gap: 2px; }
       .tldr dd { margin-bottom: 12px; }
@@ -61,8 +66,9 @@
     <section class="case-hero">
       <p class="kicker">Course project · Conversation design</p>
       <h1>How do you get a customer to finish giving feedback?</h1>
-      <p class="case-meta">IBM Watson Assistant · 2026 · Team of four</p>
-      <a class="demo-btn" href="https://ahsubi.github.io/feedback_page/">Play the demo &rarr;</a>
+      <p class="case-meta">IBM Watson Assistant · HTML/JS · 2026 · Team of four, version 2 rebuilt solo</p>
+      <a class="demo-btn" href="https://ahsubi.github.io/feedback_page/v2.html">Play version 2 &rarr;</a>
+      <a class="demo-alt" href="https://ahsubi.github.io/feedback_page/">Original course version</a>
     </section>
 
     <section class="tldr" aria-label="Summary">
@@ -72,7 +78,7 @@
         <dt>What we built</dt>
         <dd>A tap-to-answer feedback chatbot for Luma, a fictional cosmetics brand, that ends in a spin-wheel reward.</dd>
         <dt>My part</dt>
-        <dd>Co-designed the conversation flow, and created the visual identity, chatbot imagery and spin-wheel page.</dd>
+        <dd>Co-designed the conversation flow, and created the visual identity, chatbot imagery and spin-wheel page. After the course, I rebuilt the chatbot on my own as version 2.</dd>
         <dt>Key idea</dt>
         <dd>Each answer option points to the team that needs to act on it.</dd>
       </dl>
@@ -88,6 +94,7 @@
       <h2>Context &amp; constraints</h2>
       <p>This was a team project with four people. I co-designed the conversation flow with one teammate, and created Luma's visual identity, the chatbot imagery and the spin-wheel reward page.</p>
       <p>The chatbot was built in IBM Watson Assistant on a trial account, which has since expired. The playable demo recreates the same flow in HTML and JavaScript. It was a course prototype, tried out by classmates rather than real customers.</p>
+      <p>After the course, I went back to the prototype on my own, listed the gaps I could find, and rebuilt it as version 2. The flow below is the original course version. The changes are described further down.</p>
     </section>
 
     <section class="case-section">
@@ -129,15 +136,30 @@
     </section>
 
     <section class="case-section">
-      <h2>Looking back</h2>
-      <p><strong>The return path has an inconsistency.</strong> A poor refund rating gets a follow-up question, but a poor return rating does not. Customers unhappy with the return process can say so, but not why. I'd add the same follow-up there, or merge the two ratings into one.</p>
-      <p><strong>We never measured completion.</strong> The whole design is a bet that fewer, easier questions and a reward lead more people to finish. With real traffic, the first thing I'd track is where customers drop off, question by question, and whether completion changes with and without the wheel.</p>
-      <p><strong>An LLM would change the open question.</strong> Today, someone would have to read every free-text answer. A language model could tag each one by topic and urgency and send it to the right team, the same way the button options already do. The trade-offs are cost per conversation and answers getting mis-tagged, so I'd start by running it next to human review.</p>
+      <h2>Looking back, and version 2</h2>
+      <p>Going back through the original flow after the course, I found five gaps. Version 2 fixes each of them.</p>
+      <table class="compare">
+        <thead><tr><th>Version 1</th><th>Version 2</th></tr></thead>
+        <tbody>
+          <tr><td>A poor refund rating got a follow-up question, but a poor return rating did not. Customers unhappy with the return could say so, but not why.</td><td>The return and the refund both ask why, and only when the rating isn't Good.</td></tr>
+          <tr><td>Every follow-up was worded as if something had gone wrong, even when the customer picked Okay.</td><td>An Okay rating asks what could have been better. A Poor rating asks what went wrong.</td></tr>
+          <tr><td>Buttons only captured what we thought to offer.</td><td>Every follow-up has an Other option for answers in the customer's own words. The first question has none, because it only sets the path.</td></tr>
+          <tr><td>Acknowledgements were fixed lines, and some follow-ups had none at all.</td><td>Luma acknowledges every Okay or Poor rating before asking more, and varies what it says.</td></tr>
+          <tr><td>There was no way to reach a person, even for a customer with a skin reaction.</td><td>Customers who rate both the return and the refund Poor, or report a skin reaction, are offered contact from customer care.</td></tr>
+        </tbody>
+      </table>
+      <p>None of this touches the satisfied path. A customer who rates everything Good answers exactly as many questions as before. The extra questions only go to customers who had a problem, which is where the answers are most useful.</p>
+    </section>
+
+    <section class="case-section">
+      <h2>What I'd test next</h2>
+      <p><strong>Completion.</strong> The whole design is a bet that fewer, easier questions and a reward lead more people to finish. With real traffic, the first thing I'd track is where customers drop off, question by question, and whether completion changes with and without the wheel.</p>
+      <p><strong>Tagging the open answers.</strong> Today, someone would have to read every free-text answer, including the new Other responses. A language model could tag each one by topic and urgency and send it to the right team, the same way the button options already do. The trade-offs are cost per conversation and answers getting mis-tagged, so I'd start by running it next to human review.</p>
     </section>
 
     <section class="case-section">
       <h2>Artifacts</h2>
-      <p class="links"><a href="https://ahsubi.github.io/feedback_page/">Playable demo</a> &nbsp;·&nbsp; <a href="https://ahsubi.github.io/Spin-wheel/">Spin-wheel reward page</a></p>
+      <p class="links"><a href="https://ahsubi.github.io/feedback_page/v2.html">Version 2</a> &nbsp;·&nbsp; <a href="https://ahsubi.github.io/feedback_page/">Original course version</a> &nbsp;·&nbsp; <a href="https://ahsubi.github.io/Spin-wheel/">Spin-wheel reward page</a></p>
     </section>
   </main>
   <footer class="site case-foot">
