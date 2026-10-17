@@ -123,10 +123,10 @@
         </table>
       </div>
       <ul>
-        <li><strong>Matching models to jobs.</strong> We kept to open-weight models that could run on a company's own servers. Phi-4 handles structured extraction, Llama is the fallback for documents in other languages, and Mistral is an optional add-on for spotting anomalies. The validation layer itself has no language model in it.</li>
-        <li><strong>Segmenting by customer, not by feature.</strong> Both versions do the same things; the difference is how they're built. Large cell manufacturers, with many suppliers and messy data, get three separate layers that are easier to scale and to swap parts out of later. Tier-1 suppliers with simpler data get two, with capture and validation merged, which is quicker to deploy and has fewer parts to maintain.</li>
-        <li><strong>On-premise by default.</strong> Battery chemistry is commercially sensitive, and suppliers won't share it if it leaves their control. Everything runs on the company's own servers, and the passport shares proof that the data complies rather than the data itself.</li>
-        <li><strong>Costing the architecture, not the model.</strong> With two teammates, I compared what each version would cost to build and run over five years. We compared architectures because that's the decision a customer actually faces. Open-weight models carry no licence or per-use fees, so cost comes mostly from the hardware to run them and the people to maintain the system, and swapping one model for another barely changes it. The versions differed mainly in integration work and the size of the team each needs, which we modelled separately for Western and Eastern European salaries.</li>
+        <li><strong>Matching models to jobs.</strong> We limited the shortlist to open-weight models that could run on a company’s own servers, and matched each to the kind of document work it was best suited to. The validation layer itself has no language model in it.</li>
+        <li><strong>Segmenting by customer, not by feature.</strong> Both versions do the same job. The difference is how they’re built, because a large manufacturer with many suppliers and messy data needs something easier to scale, while a smaller supplier needs something quicker to deploy with fewer parts to maintain.</li>
+        <li><strong>On-premise by default.</strong> Battery chemistry is commercially sensitive, and suppliers won’t share it if it leaves their control, so the design kept data on the company’s own servers.</li>
+        <li><strong>Costing the architecture, not the model.</strong> With two teammates, I compared what each version would cost to build and run over five years. With open-weight models there are no licence fees, so cost comes mostly from hardware and the people needed to maintain the system, which is why we compared architectures rather than models.</li>
         <li><strong>Checking that it holds together.</strong> Before the final version, I went back through the proposal: whether both versions really included the same proof layer, whether cost line items added up to the totals, and whether external figures had a source. Several didn't, and were fixed.</li>
       </ul>
     </section>
@@ -134,7 +134,7 @@
     <section class="case-section">
       <h2>Looking back</h2>
       <p><strong>Agree on what each component must justify, early.</strong> My early evaluation found blockchain was only needed to notarise compliance results. As workstreams developed in parallel, the final proposal made it a core layer. Next time I'd agree up front on what each component has to justify before it goes into the architecture, and check against that as the work comes together.</p>
-      <p><strong>Screen models on licence and language first.</strong> Llama 4's licence excludes companies based in the EU, and Chinese is not among its officially supported languages, even though most battery suppliers are in Asia. A licence and language check before comparing capabilities would have changed the shortlist.</p>
+      <p><strong>Screen models on licence and language first.</strong> One shortlisted model’s licence turned out to restrict use by EU-based companies, and its supported languages didn’t cover many supplier documents. Checking licence and language before capabilities would have changed the shortlist.</p>
       <p><strong>Test on real documents.</strong> We compared models on what they're designed for, not on actual supplier files. A small test set of real multilingual documents would have been the first step.</p>
     </section>
   </main>
