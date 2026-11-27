@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luma AI evaluation · Aryna Hsu</title>
+  <meta name="description" content="Case study by Aryna Hsu.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .case-hero { padding: 64px 0 8px; }
+    .case-hero h1 {
+      font-family: var(--display); font-weight: 600;
+      font-size: clamp(1.6rem, 3.6vw, 2.4rem);
+      line-height: 1.2; letter-spacing: -0.02em;
+      margin: 0 0 12px; max-width: 24em;
+    }
+    .case-meta { font-family: var(--mono); font-size: 0.8125rem; color: var(--muted); margin: 0; }
+    .case-section { padding: 40px 0 0; }
+    .case-section h2 {
+      font-family: var(--display); font-weight: 600; font-size: 1.25rem;
+      letter-spacing: -0.01em; margin: 0 0 12px;
+      padding-bottom: 10px; border-bottom: 1px solid var(--line);
+    }
+    .case-section p, .case-section ul { max-width: 44em; }
+    .case-section li { margin-bottom: 8px; }
+    .back { font-size: 0.9375rem; font-weight: 500; }
+    .case-foot { margin-top: 64px; }
+    strong { font-weight: 600; }
+    .tldr { margin: 28px 0 0; padding: 20px 24px; background: var(--tint); border-left: 3px solid var(--accent); border-radius: 4px; max-width: 44em; }
+    .tldr dl { margin: 0; display: grid; grid-template-columns: 7.5em 1fr; gap: 12px 16px; }
+    .tldr dt { font-family: var(--mono); font-size: 0.8125rem; color: var(--muted); padding-top: 3px; }
+    .tldr dd { margin: 0; }
+    .demo-btn { display: inline-block; margin-top: 20px; background: var(--accent); color: #fff; padding: 10px 20px; border-radius: 999px; font-weight: 600; font-size: 0.9375rem; border-bottom: 0; }
+    .demo-btn:hover { background: var(--accent-dk); color: #fff; border-bottom: 0; }
+    .compare { width: 100%; max-width: 44em; border-collapse: collapse; margin: 16px 0; font-size: 0.9375rem; }
+    .compare th { font-family: var(--mono); font-size: 0.8125rem; font-weight: 500; color: var(--muted); text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+    .compare td { padding: 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .compare td:first-child { color: var(--muted); }
+
+    /* Try it yourself */
+    .cases { max-width: 44em; }
+    .case { border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; margin: 16px 0; }
+    .case .num { font-family: var(--mono); font-size: 0.8125rem; color: var(--muted); margin: 0 0 8px; }
+    .case blockquote { margin: 0 0 16px; padding: 0 0 0 14px; border-left: 3px solid var(--accent); font-size: 1.0625rem; }
+    .pick { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+    .pick label { font-family: var(--mono); font-size: 0.8125rem; color: var(--muted); margin-right: 6px; }
+    .pick select { font: inherit; font-size: 0.9375rem; padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px; background: #fff; color: var(--ink); }
+    .urg { display: inline-flex; gap: 6px; }
+    .urg button, .reveal { font: inherit; font-size: 0.9375rem; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--accent); background: #fff; color: var(--accent); cursor: pointer; }
+    .urg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+    .reveal { background: var(--accent); color: #fff; font-weight: 600; margin-top: 14px; }
+    .reveal:hover { background: var(--accent-dk); }
+    .reveal:disabled { opacity: 0.4; cursor: default; }
+    .answer { margin-top: 16px; }
+    .answer table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+    .answer th { font-family: var(--mono); font-size: 0.8125rem; font-weight: 500; color: var(--muted); text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+    .answer td { padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .answer td.who { font-family: var(--mono); font-size: 0.8125rem; color: var(--muted); white-space: nowrap; }
+    .answer .why { display: block; font-size: 0.875rem; color: var(--muted); margin-top: 2px; }
+    .answer .rule { margin: 12px 0 0; padding: 10px 14px; background: var(--tint); border-radius: 4px; font-size: 0.9375rem; }
+    .answer .lesson { margin: 10px 0 0; font-size: 0.9375rem; }
+    @media (max-width: 560px) {
+      .tldr dl { grid-template-columns: 1fr; gap: 2px; }
+      .tldr dd { margin-bottom: 12px; }
+      .answer td.who { white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <a class="name" href="../index.html">Aryna Hsu</a>
+    <nav aria-label="Site">
+      <a class="back" href="../index.html#projects">&larr; All projects</a>
+    </nav>
+  </header>
+  <main>
+    <section class="case-hero">
+      <p class="kicker">Product decision · AI evaluation</p>
+      <h1>Should a product team let AI sort its customer feedback?</h1>
+      <p class="case-meta">Claude API · Claude Code · Python · pandas · 2026 · Solo</p>
+      <a class="demo-btn" href="#try">Try it yourself &darr;</a>
+    </section>
+
+    <section class="tldr" aria-label="Summary">
+      <dl>
+        <dt>Question</dt>
+        <dd>Can a model send open-text feedback to the right team, and flag urgent cases, as well as a person?</dd>
+        <dt>What I built</dt>
+        <dd>Labelling rules, a labelled set of feedback, and an evaluation comparing a large and a small Claude model.</dd>
+        <dt>My part</dt>
+        <dd>All of it. I wrote the rules and every human label, and used Claude Code to write and run the scripts.</dd>
+        <dt>Key finding</dt>
+        <dd>The models followed my written rules more closely than I did.</dd>
+        <dt>Recommendation</dt>
+        <dd>Treat the rules as something that keeps improving, with a person deciding every case where the model and people disagree.</dd>
+      </dl>
+    </section>
+
+    <section class="case-section">
+      <h2>The problem</h2>
+      <p>My <a href="luma-chatbot.html">Luma chatbot</a>, built for a fictional cosmetics brand, ends with one open question, and someone has to read every answer and decide which team acts on it. A language model could do that job, but only if it gets the important cases right. For a cosmetics brand, the costliest mistake is missing a customer who reports a reaction to a product.</p>
+      <p>Each response gets two labels: which team should handle it, and whether it is Urgent or Normal.</p>
+    </section>
+
+    <section class="case-section" id="try">
+      <h2>Try it yourself</h2>
+      <p>Here are five responses from the test set. Pick a team and an urgency for each, then compare your answer with mine and with the two models.</p>
+      <div class="cases" id="cases"></div>
+    </section>
+
+    <section class="case-section">
+      <h2>What I found</h2>
+      <table class="compare">
+        <thead><tr><th>Test set, 79 responses</th><th>Opus (larger)</th><th>Haiku (smaller)</th></tr></thead>
+        <tbody>
+          <tr><td>Team and urgency both right</td><td>70 of 79</td><td>70 of 79</td></tr>
+          <tr><td>Urgent cases caught</td><td>16 of 17</td><td>14 of 17</td></tr>
+          <tr><td>Cost of the run</td><td>$0.89</td><td>$0.02</td></tr>
+        </tbody>
+      </table>
+      <p>With 79 responses, one row moves the overall score by more than a point, and the gap in urgent cases is two responses. I read these numbers as signals, not proof.</p>
+      <ul>
+        <li><strong>The real difference is urgent cases.</strong> Both models got the same number fully right. Opus missed one urgent case and Haiku missed three, at about a fortieth of the cost. Which one to use depends on what a missed safety complaint is worth to the business.</li>
+        <li><strong>Opus erred on the side of caution.</strong> Its false alarms were possible reactions flagged as Urgent, which is the cheaper mistake under these rules.</li>
+        <li><strong>A model's reason and label can disagree.</strong> In one case Haiku's own reasoning concluded "Product Safety, Urgent", while the label it gave was "Unclear, Normal".</li>
+      </ul>
+    </section>
+
+    <section class="case-section">
+      <h2>What I'd recommend</h2>
+      <p>The hardest part was never choosing the model. It was writing rules clear enough that a model and a person would make the same call, and no set of rules covers everything. So for Luma, or any team using AI to sort feedback, I'd treat the rules as something that keeps improving, not a document written once.</p>
+      <ul>
+        <li><strong>Disagreements go to a person.</strong> Every case where the model and a person disagree, or where the model's reason and label don't match, is decided by someone on the team that owns it.</li>
+        <li><strong>Each decision is written back into the rules</strong> as an example, so the next similar case is covered. Whether dry lips count as a reaction, for instance, is for Product Safety to decide once.</li>
+        <li><strong>The same fixed set is re-run after every rule change,</strong> to check that a fix didn't break anything else.</li>
+        <li><strong>The number to watch is how often the model and people disagree.</strong> If it keeps falling, the rules are getting clearer.</li>
+      </ul>
+      <p>This is close to how teams that run AI evaluations work. Doing it on a small scale showed me why: most of the hard cases came from the rules, not the model.</p>
+    </section>
+
+    <section class="case-section">
+      <h2>Looking back</h2>
+      <p>When I checked the urgency disagreements against my own rules, at least two came from my labels, not the models. My rules say a late delivery is Normal, but I had labelled one Urgent. A customer had already called their bank, which my rules count as an escalation, but I had labelled it Normal. Other cases were mild reactions, where my rules say Urgent and my instinct said not serious.</p>
+      <p>Writing rules precise enough for a model showed me how much of my own labelling relied on judgement I had never written down. Where the rules and my instinct disagreed, the models followed the rules.</p>
+    </section>
+
+    <section class="case-section">
+      <h2>How I set it up</h2>
+      <ul>
+        <li><strong>Data.</strong> 129 synthetic responses: 108 generated with Claude and 21 written by me. No real customer data.</li>
+        <li><strong>Labels.</strong> Seven teams, from Logistics to Product Safety, and two urgency levels. I was the only labeller.</li>
+        <li><strong>Split.</strong> A development set of 50 responses for improving the rules, and a test set of 79 kept aside until the end.</li>
+        <li><strong>Process.</strong> I ran both models on the development set, read every disagreement and revised the rules twice. Then I froze the rules, re-labelled the test set blind, and ran the test once with no changes afterwards.</li>
+        <li><strong>Cost.</strong> About $2.50 in API spend for the whole project.</li>
+      </ul>
+    </section>
+
+    <section class="case-section">
+      <h2>Judgment calls</h2>
+      <p><strong>A missed urgent case counts as the worst error.</strong> So I tracked how many urgent cases each model caught, not just overall accuracy.</p>
+      <p><strong>I removed the severity tier.</strong> My second version of the rules let mild reactions count as Normal. On the development set, that cut the urgent cases Haiku caught from 11 of 13 to 9 of 13. The final rules send every reported reaction to Product Safety as Urgent, and leave severity to that team.</p>
+      <p><strong>The test set was used once.</strong> After three rounds of changes, Opus got all 50 development responses right, partly because I re-labelled rows as the rules changed. On the test set it got 70 of 79, which is the honest number.</p>
+    </section>
+  </main>
+  <footer class="site case-foot">
+    <div class="foot-links">
+      <a href="../index.html#projects">&larr; All projects</a>
+    </div>
+    <p class="colophon">&copy; 2026 Aryna Hsu · United Kingdom</p>
+  </footer>
+</div>
+
+<script>
+  var TEAMS = ["Logistics", "Product Quality", "Product Safety", "Finance (Payments & Refunds)", "Customer Service", "Positive, suggestions or no action", "Unclear"];
+
+  var CASES = [
+    {
+      text: "Small red patch on my cheek after the moisturiser, not sure if it's the product or just my skin acting up.",
+      me:    ["Product Safety", "Urgent"],
+      opus:  ["Product Safety", "Urgent", "A red patch after use is a physical reaction, so it goes to Product Safety as Urgent even though the customer is unsure of the cause."],
+      haiku: ["Product Safety", "Urgent", "A red patch after use is a physical reaction, which is Urgent however mild it sounds."],
+      rule:  "Any reported physical reaction after use goes to Product Safety as Urgent, however mild it sounds.",
+      lesson: "A warm-up. The rule is clear, and all three of us agree."
+    },
+    {
+      text: "A bit dry on my lips after a few hours but otherwise ok.",
+      me:    ["Product Quality", "Normal"],
+      opus:  ["Product Safety", "Urgent", "Dry lips after use may be a physical reaction, and uncertain health cases count as Urgent, regardless of the mild tone."],
+      haiku: ["Product Quality", "Normal", "Dryness is a product effect not meeting expectations, not a reaction such as redness, itching or swelling."],
+      rule:  "Any physical reaction is Urgent, regardless of how mild it sounds. If unsure whether it is a health issue, label it Urgent.",
+      lesson: "My instinct said dry lips are not a safety issue, and Haiku agreed. Opus read my rule literally. My rules never said whether dryness counts as a reaction."
+    },
+    {
+      text: "It's been weeks and my order still hasn't turned up. Where is it?",
+      me:    ["Logistics", "Urgent"],
+      opus:  ["Logistics", "Normal", "A late delivery goes to Logistics, and waiting time only counts toward urgency for refunds."],
+      haiku: ["Logistics", "Normal", "Non-delivery after weeks is a Logistics issue, and waiting time only makes refunds Urgent."],
+      rule:  "Waiting time only counts for refunds. A late delivery is Normal unless another urgency rule applies.",
+      lesson: "Both models quoted my own rule back to me. My label was the one that did not follow it."
+    },
+    {
+      text: "Ok you said you have initiated the refund but it never went through. Now I have to call my bank. And they said there's nothing they could do at the moment. Please contact me at [number]",
+      me:    ["Finance (Payments & Refunds)", "Normal"],
+      opus:  ["Finance (Payments & Refunds)", "Urgent", "The customer contacted their bank about the refund, which counts as an escalation."],
+      haiku: ["Finance (Payments & Refunds)", "Urgent", "Contacting a bank about a payment is an escalation under the rules, and the main issue is a refund."],
+      rule:  "Escalation is Urgent, including contacting a bank or card provider about a payment.",
+      lesson: "Reading it again, the customer had clearly already called their bank. The models were right and my label was not."
+    },
+    {
+      text: "My skin just doesn't feel right since I started using it.",
+      me:    ["Product Safety", "Urgent"],
+      opus:  ["Product Safety", "Urgent", "A vague skin complaint after use may be a reaction, so it is treated as a health or safety issue."],
+      haiku: ["Unclear", "Normal", "Too vague to assign a team; because it may describe a physical reaction, it should be treated as a health or safety issue, which gives Product Safety and Urgent."],
+      rule:  "If a response is too vague to assign a team but may describe a physical reaction, label it Product Safety and Urgent.",
+      lesson: "Read Haiku's reason to the end. It reaches the right answer, then gives a different label. A simple check for this kind of mismatch would catch it."
+    }
+  ];
+
+  function esc(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function row(who, label, why, mine) {
+    var match = mine ? (label[0] === mine[0] && label[1] === mine[1]) : null;
+    var mark = match === null ? "" : (match ? " &#10003;" : "");
+    return "<tr><td class=\"who\">" + who + "</td><td>" + esc(label[0]) + ", <strong>" + esc(label[1]) + "</strong>" + mark +
+      (why ? "<span class=\"why\">" + esc(why) + "</span>" : "") + "</td></tr>";
+  }
+
+  var box = document.getElementById("cases");
+  CASES.forEach(function (c, i) {
+    var el = document.createElement("div");
+    el.className = "case";
+    var opts = "<option value=\"\">Choose a team</option>" + TEAMS.map(function (t) {
+      return "<option>" + esc(t) + "</option>";
+    }).join("");
+    el.innerHTML =
+      "<p class=\"num\">Response " + (i + 1) + " of " + CASES.length + "</p>" +
+      "<blockquote>" + esc(c.text) + "</blockquote>" +
+      "<div class=\"pick\">" +
+        "<span><label for=\"t" + i + "\">Team</label><select id=\"t" + i + "\">" + opts + "</select></span>" +
+        "<span><label>Urgency</label><span class=\"urg\" role=\"group\" aria-label=\"Urgency\">" +
+          "<button type=\"button\" aria-pressed=\"false\">Urgent</button>" +
+          "<button type=\"button\" aria-pressed=\"false\">Normal</button>" +
+        "</span></span>" +
+      "</div>" +
+      "<button type=\"button\" class=\"reveal\" disabled>Compare answers</button>" +
+      "<div class=\"answer\" hidden></div>";
+    box.appendChild(el);
+
+    var sel = el.querySelector("select");
+    var urgBtns = el.querySelectorAll(".urg button");
+    var reveal = el.querySelector(".reveal");
+    var ans = el.querySelector(".answer");
+    var urg = "";
+
+    function ready() { reveal.disabled = !(sel.value && urg); }
+    sel.addEventListener("change", ready);
+    urgBtns.forEach(function (b) {
+      b.addEventListener("click", function () {
+        urgBtns.forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
+        b.setAttribute("aria-pressed", "true");
+        urg = b.textContent;
+        ready();
+      });
+    });
+    reveal.addEventListener("click", function () {
+      var you = [sel.value, urg];
+      ans.innerHTML =
+        "<table><thead><tr><th></th><th>Team, urgency <span style=\"font-weight:400\">(&#10003; = same as my label)</span></th></tr></thead><tbody>" +
+        row("You", you, "", null) +
+        row("Me", c.me, "", null) +
+        row("Opus", c.opus, c.opus[2], c.me) +
+        row("Haiku", c.haiku, c.haiku[2], c.me) +
+        "</tbody></table>" +
+        "<p class=\"rule\"><strong>The rule:</strong> " + esc(c.rule) + "</p>" +
+        "<p class=\"lesson\">" + esc(c.lesson) + "</p>";
+      ans.hidden = false;
+      reveal.textContent = "Answers shown";
+      reveal.disabled = true;
+    });
+  });
+</script>
+</body>
+</html>
